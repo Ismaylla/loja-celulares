@@ -14,13 +14,13 @@ public class ProdutoValidator {
             throw new IllegalArgumentException("Preço do produto deve ser maior que zero.");
         }
 
-        if (produto.getQuantidadeEstoque() < 0) {
-            throw new IllegalArgumentException("Quantidade em estoque não pode ser negativa.");
-        }
+      //  if (produto.getQuantidadeEstoque() < 0) {
+          //  throw new IllegalArgumentException("Quantidade em estoque não pode ser negativa.");
+      //  }
 
-        if (produto.getEstoqueMinimo() < 0) {
-            throw new IllegalArgumentException("Estoque mínimo não pode ser negativo.");
-        }
+       // if (produto.getEstoqueMinimo() < 0) {
+       //     throw new IllegalArgumentException("Estoque mínimo não pode ser negativo.");
+      //  }
         
     }
 }

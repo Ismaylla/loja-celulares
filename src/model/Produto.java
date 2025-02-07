@@ -1,88 +1,91 @@
 package model;
 
-public class Produto {
-	private int id;
+import java.io.Serializable;
+
+public class Produto implements Serializable {
 	private String nome;
-	private String marca;
 	private String modelo;
+	private String marca;
 	private double preco;
-	private int QuantEstoque;
-	private int estoqueMin;
-	
-	public Produto(int id, String nome, double preco, int QuantEstoque, int estoqueMin) {
-		this.id = id;
+	private int estoqueAtual;
+	private int estoqueMinimo;
+
+	public Produto(String nome, String modelo, String marca, double preco, int estoqueAtual, int estoqueMinimo) {
 		this.nome = nome;
+		this.marca = marca;
 		this.preco = preco;
-		this.QuantEstoque = QuantEstoque;
-		this.estoqueMin = estoqueMin;
+		this.estoqueAtual = estoqueAtual;
+		this.estoqueMinimo = estoqueMinimo;
 	}
-	
-	public int getId() {
-		return id;
-	}
-	
-	public void setId(int id) {
-		this.id = id;
-	}
-	
+
 	public String getNome() {
 		return nome;
 	}
-	
+
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	
+
 	public String getMarca() {
 		return marca;
 	}
-	
+
 	public void setMarca(String marca) {
-		this.marca =  marca;
+		this.marca = marca;
 	}
-	
-	public String getModelo() {
-		return modelo;
-	}
-	
-	public void setModelo(String modelo) {
-		this.modelo = modelo;
-	}
-	
+
 	public double getPreco() {
 		return preco;
 	}
-	
+
 	public void setPreco(double preco) {
 		this.preco = preco;
 	}
-	
-	public int getQuantEstoque() {
-		return QuantEstoque;
+
+	public int getEstoqueAtual() {
+		return estoqueAtual;
 	}
-	
-	public void setQuantEstoque(int QuantEstoque) {
-		this.QuantEstoque = QuantEstoque;
+
+	public void setEstoqueAtual(int estoqueAtual) {
+		this.estoqueAtual = estoqueAtual;
 	}
-	
-	public int getEstoqueMin() {
-		return estoqueMin;
+
+	public int getEstoqueMinimo() {
+		return estoqueMinimo;
 	}
-	
-	public void setEstoqueMin(int estoqueMin) {
-		this.estoqueMin = estoqueMin;
+
+	public void setEstoqueMinimo(int estoqueMinimo) {
+		this.estoqueMinimo = estoqueMinimo;
 	}
-	
+
+	public String getmodelo(){
+		return modelo;
+	}
+
+	public void setmodelo(String modelo){
+		this.modelo = modelo;
+	}
+
+
+	public Produto CriarProdutoPartiDaLinha(String CriarProduto) {
+		String[] linhas = CriarProduto.split(";");
+		String nome = linhas[0];
+		String modelo = linhas[1];
+		String marca = linhas[2];
+		double preco = Double.parseDouble(linhas[3]);
+		int estoqueAtual = Integer.parseInt(linhas[4]);
+		int estoqueMinimo = Integer.parseInt(linhas[5]);
+		return new Produto(nome, modelo, marca, preco, estoqueAtual, estoqueMinimo);
+	}
+
 	@Override
-    public String toString() {
-        return "Produto{" +
-                "id =" + id +
-                ", nome ='" + nome + '\'' +
-                ", preco =" + preco +
-                ", marca =" + marca +
-                ", modelo =" + modelo +
-                ", quantidadeEstoque =" + QuantEstoque +
-                ", estoqueMinimo =" + estoqueMin +
-                '}';
-    }
+	public String toString() {
+		return "Produto{" +
+				"nome='" + nome + '\'' +
+				", marca='" + marca + '\'' +
+				", preco=" + preco +
+				", estoqueAtual=" + estoqueAtual +
+				", estoqueMinimo=" + estoqueMinimo +
+				'}';
+	}
 }

@@ -79,7 +79,7 @@ public class ClienteController {
         }
     }
 
-    private List<Cliente> carregarClientes() {
+    public List<Cliente> carregarClientes() {
         try {
             return ArquivoUtil.carregarLista(ARQUIVO_CLIENTES);
         } catch (IOException | ClassNotFoundException e) {

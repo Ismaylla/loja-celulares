@@ -1,6 +1,8 @@
 package view;
 
-
+import model.Cliente;
+import controller.ClienteController;
+import javax.swing.JOptionPane;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,7 +17,7 @@ public class Gerenciar_Cliente extends JFrame {
     private JButton button5;
 
     public Gerenciar_Cliente() {
-        this.setTitle("Gerenciar Cliente");
+        this.setTitle("Sistema de Gerenciar Cliente");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
@@ -54,9 +56,30 @@ public class Gerenciar_Cliente extends JFrame {
         button2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                ClienteController controller = new ClienteController();
+                String cpf = JOptionPane.showInputDialog("Digite o CPF do cliente que deseja atualizar:");
+                if (cpf == null || cpf.trim().isEmpty()) return;
 
+                Cliente clienteExistente = controller.buscarClientePorCpf(cpf);
+                if (clienteExistente == null) {
+                    JOptionPane.showMessageDialog(null, "Cliente não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                String novoNome = JOptionPane.showInputDialog("Novo nome (atual: " + clienteExistente.getNome() + "):", clienteExistente.getNome());
+                String novoTelefone = JOptionPane.showInputDialog("Novo telefone (atual: " + clienteExistente.getTelefone() + "):", clienteExistente.getTelefone());
+                String novoEmail = JOptionPane.showInputDialog("Novo email (atual: " + clienteExistente.getEmail() + "):", clienteExistente.getEmail());
+
+                if (novoNome != null && novoTelefone != null && novoEmail != null) {
+                    clienteExistente.setNome(novoNome);
+                    clienteExistente.setTelefone(novoTelefone);
+                    clienteExistente.setEmail(novoEmail);
+                    controller.atualizarCliente(cpf, clienteExistente);
+                    JOptionPane.showMessageDialog(null, "Cliente atualizado com sucesso!");
+                }
             }
         });
+
 
         button3.addActionListener(new ActionListener() {
             @Override
@@ -68,14 +91,31 @@ public class Gerenciar_Cliente extends JFrame {
         button4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                ClienteController controller = new ClienteController();
+                java.util.List<Cliente> clientes = controller.carregarClientes();
 
+                if (clientes.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Nenhum cliente encontrado!", "Lista de Clientes", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    StringBuilder listaClientes = new StringBuilder();
+                    for (Cliente cliente : clientes) {
+                        listaClientes.append(cliente.toString()).append("\n");
+                    }
+
+                    JTextArea textArea = new JTextArea(listaClientes.toString());
+                    textArea.setEditable(false);
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+
+                    JOptionPane.showMessageDialog(null, scrollPane, "Lista de Clientes", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         });
+
 
         button5.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Tela_Funcionario f = new Tela_Funcionario();
+                MainView f = new MainView();
                 dispose();
                 f.setVisible(true);
             }
@@ -101,54 +141,58 @@ public class Gerenciar_Cliente extends JFrame {
             if (cpf == null) return;
         }
 
+        String telefone = JOptionPane.showInputDialog("Digite seu Telefone:");
+        if (telefone == null) return;
+
+        while (telefone.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "O campo Telefone não pode ser vazio.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+            telefone = JOptionPane.showInputDialog("Digite seu Telefone:");
+            if (telefone == null) return;
+        }
+
         String email = JOptionPane.showInputDialog("Digite seu E-mail:");
         if (email == null) return;
 
         while (email.isEmpty()) {
             JOptionPane.showMessageDialog(null, "O campo E-mail não pode ser vazio.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
             email = JOptionPane.showInputDialog("Digite seu E-mail:");
-            if (email == null) return; // Se o usuário cancelar, sai do método
+            if (email == null) return;
         }
 
-        JOptionPane.showMessageDialog(null, "Nome: " + nome + "\nCPF: " + cpf + "\nE-mail: " + email, "Dados do Cliente", JOptionPane.INFORMATION_MESSAGE);
+        Cliente cliente = new Cliente(nome, cpf, telefone, email, 0.0, 0);
+        ClienteController controller = new ClienteController();
+
+        controller.adicionarCliente(cliente);
 
         JOptionPane.showMessageDialog(null, "Cliente adicionado com sucesso!");
     }
 
 
+
     public void excluirCliente() {
-        String nome_excluir = "";
-        while (nome_excluir == null || nome_excluir.isEmpty()) {
-            nome_excluir = JOptionPane.showInputDialog("Digite o nome do cliente que deseja excluir:");
-            if (nome_excluir == null) return;
+        ClienteController controller = new ClienteController();
 
-            if (nome_excluir == null || nome_excluir.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "O campo Nome não pode ser vazio.", "Erro de validação", JOptionPane.ERROR_MESSAGE);
-            }
-            String cpf_excluir = "";
-            while (cpf_excluir == null || cpf_excluir.isEmpty()) {
-                cpf_excluir = JOptionPane.showInputDialog("Digite o CPF do cliente que deseja excluir:");
-                if (cpf_excluir == null) return;
-
-                if (cpf_excluir == null || cpf_excluir.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "O campo Cpf não pode ser vazio", "Erro de validação", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-            String email_exclui = "";
-            while (email_exclui == null || email_exclui.isEmpty()) {
-                email_exclui = JOptionPane.showInputDialog("Digite o E-mail do cliente que deseja excluir:");
-                if (email_exclui == null) return;
-
-                if (email_exclui == null || email_exclui.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "O campo E-mail não pode ser vazio", "Erro de validação", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-            JOptionPane.showMessageDialog(null, "Nome: " + nome_excluir + "\nCPF: " + cpf_excluir + "\nE-mail: " + email_exclui, "Dados do Cliente", JOptionPane.INFORMATION_MESSAGE);
-
-            JOptionPane.showMessageDialog(null, "Cliente excluido com sucesso!");
-
+        String cpf = JOptionPane.showInputDialog("Digite o CPF do cliente que deseja excluir:");
+        if (cpf == null || cpf.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "O campo CPF não pode ser vazio.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
+        Cliente cliente = controller.buscarClientePorCpf(cpf);
+        if (cliente == null) {
+            JOptionPane.showMessageDialog(null, "Cliente não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
+        int confirmacao = JOptionPane.showConfirmDialog(null,
+                "Tem certeza que deseja excluir o cliente?\n" + cliente,
+                "Confirmação",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmacao == JOptionPane.YES_OPTION) {
+            controller.removerCliente(cpf);
+            JOptionPane.showMessageDialog(null, "Cliente excluído com sucesso!");
+        }
     }
+
 }

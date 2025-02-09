@@ -5,7 +5,6 @@ import java.util.List;
 
 public class ArquivoUtil {
 
-    // Salvar e carregar uma lista de objetos em um arquivo
     public static <T> void salvarLista(String caminho, List<T> lista) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(caminho))) {
             oos.writeObject(lista);

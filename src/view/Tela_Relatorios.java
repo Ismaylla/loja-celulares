@@ -54,7 +54,7 @@ public class Tela_Relatorios extends JFrame {
         Botao_Voltar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Tela_Funcionario f = new Tela_Funcionario();
+                MainView f = new MainView();
                 dispose();
                 f.setVisible(true);
             }

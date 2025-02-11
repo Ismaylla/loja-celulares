@@ -15,6 +15,7 @@ public class ClienteController {
     private static final Pattern CPF_PATTERN = Pattern.compile("\\d{11}");
     private static final Pattern NOME_PATTERN = Pattern.compile("^[A-Za-zÀ-ÿ ]+$");
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w.%+-]+@[\\w.-]+\\.[A-Za-z]{2,6}$");
+    private static final Pattern TELEFONE_PATTERN = Pattern.compile("(\\d{2}\\d{5}-\\d{4})");
 
     public ClienteController() {
         this.clientes = carregarClientes();
@@ -124,6 +125,10 @@ public class ClienteController {
 
     public boolean validarEmail(String email) {
         return email != null && EMAIL_PATTERN.matcher(email).matches();
+    }
+
+    public boolean validarTelefone(String telefone) {
+        return telefone != null && TELEFONE_PATTERN.matcher(telefone).matches();
     }
 
     public boolean validarCliente(Cliente cliente) {

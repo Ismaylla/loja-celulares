@@ -84,8 +84,13 @@ public class Gerenciar_Cliente extends JFrame {
             JOptionPane.showMessageDialog(null, "Email inválido! Formato esperado: exemplo@dominio.com.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
 
-        String telefone = JOptionPane.showInputDialog("Digite seu Telefone:");
-        if (telefone == null) return;
+        String telefone;
+        while (true) {
+            telefone = JOptionPane.showInputDialog("Digite seu Telefone:");
+            if (telefone == null) return;
+            if (controller.validarTelefone(telefone)) break;
+            JOptionPane.showMessageDialog(null, "Telefone inválido! Formato esperado: 81999999999.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
 
         Cliente cliente = new Cliente(nome, cpf, telefone, email, 0.0, 0);
         controller.adicionarCliente(cliente);

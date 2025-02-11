@@ -54,45 +54,40 @@ public class Gerenciar_Cliente extends JFrame {
     }
 
     private void abrirFormularioAdicionarCliente() {
-        String nome = JOptionPane.showInputDialog("Digite seu nome:");
-        if (nome == null) return;
+        ClienteController controller = new ClienteController();
+        String nome;
 
-        while (nome.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "O campo Nome não pode ser vazio.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+        while (true) {
             nome = JOptionPane.showInputDialog("Digite seu nome:");
             if (nome == null) return;
+            if (controller.validarNome(nome)) break;
+            JOptionPane.showMessageDialog(null, "Nome inválido! Digite apenas letras e espaços.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
 
-        String cpf = JOptionPane.showInputDialog("Digite seu CPF:");
-        if (cpf == null) return;
-
-        while (cpf.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "O campo CPF não pode ser vazio.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+        String cpf;
+        while (true) {
             cpf = JOptionPane.showInputDialog("Digite seu CPF:");
             if (cpf == null) return;
+            if (controller.buscarClientePorCpf(cpf) != null) {
+                JOptionPane.showMessageDialog(null, "Erro: Já existe um cliente com este CPF.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (controller.validarCpf(cpf)) break;
+            JOptionPane.showMessageDialog(null, "CPF inválido! Digite exatamente 11 números.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+
+        String email;
+        while (true) {
+            email = JOptionPane.showInputDialog("Digite seu E-mail:");
+            if (email == null) return;
+            if (controller.validarEmail(email)) break;
+            JOptionPane.showMessageDialog(null, "Email inválido! Formato esperado: exemplo@dominio.com.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
 
         String telefone = JOptionPane.showInputDialog("Digite seu Telefone:");
         if (telefone == null) return;
 
-        while (telefone.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "O campo Telefone não pode ser vazio.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
-            telefone = JOptionPane.showInputDialog("Digite seu Telefone:");
-            if (telefone == null) return;
-        }
-
-        String email = JOptionPane.showInputDialog("Digite seu E-mail:");
-        if (email == null) return;
-
-        while (email.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "O campo E-mail não pode ser vazio.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
-            email = JOptionPane.showInputDialog("Digite seu E-mail:");
-            if (email == null) return;
-        }
-
         Cliente cliente = new Cliente(nome, cpf, telefone, email, 0.0, 0);
-        ClienteController controller = new ClienteController();
-
         controller.adicionarCliente(cliente);
 
         JOptionPane.showMessageDialog(null, "Cliente adicionado com sucesso!");

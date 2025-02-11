@@ -7,8 +7,6 @@ import model.Produto;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,14 +121,23 @@ public class Realizar_Vendas extends JFrame {
         if (produtos.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Nenhum produto cadastrado!", "Tabela de Produtos", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            StringBuilder tabela = new StringBuilder("Produtos Cadastrados:\n");
-            for (Produto produto : produtos) {
-                tabela.append(produto).append("\n");
+            String[] colunas = {"Nome", "Modelo", "Marca", "Preço", "Estoque Atual"};
+            String[][] dados = new String[produtos.size()][5];
+
+            for (int i = 0; i < produtos.size(); i++) {
+                Produto p = produtos.get(i);
+                dados[i][0] = p.getNome();
+                dados[i][1] = p.getmodelo();
+                dados[i][2] = p.getMarca();
+                dados[i][3] = String.format("R$ %.2f", p.getPreco());
+                dados[i][4] = String.valueOf(p.getEstoqueAtual());
             }
 
-            JTextArea textArea = new JTextArea(tabela.toString());
-            textArea.setEditable(false);
-            JScrollPane scrollPane = new JScrollPane(textArea);
+            JTable tabela = new JTable(dados, colunas);
+            JScrollPane scrollPane = new JScrollPane(tabela);
+
+            tabela.setAutoCreateRowSorter(true);
+
             JOptionPane.showMessageDialog(null, scrollPane, "Tabela de Produtos", JOptionPane.INFORMATION_MESSAGE);
         }
     }

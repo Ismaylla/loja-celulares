@@ -66,11 +66,10 @@ public class Tela_Relatorios extends JFrame {
     private void carregarRelatoriosDeArquivo(DefaultTableModel modeloTabela, String caminhoArquivo) {
         try (BufferedReader br = new BufferedReader(new FileReader(caminhoArquivo))) {
             String linha;
-            modeloTabela.setRowCount(0); // Limpar tabela antes de carregar novos dados
+            modeloTabela.setRowCount(0);
 
             while ((linha = br.readLine()) != null) {
                 String[] dados = linha.split(";");
-                // Certificar-se de que a linha tem os dados completos
                 if (dados.length == 5) {
                     modeloTabela.addRow(dados);
                 }

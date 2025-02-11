@@ -61,10 +61,8 @@ public class Venda implements Serializable {
         double quantidadeMoney = Double.parseDouble(linhas[4]);
         int quantidadeVezesComprou = Integer.parseInt(linhas[5]);
 
-        // Criar objeto Cliente
         Cliente cliente = new Cliente(nomeCliente, cpfCliente, telefoneCliente, emailCliente, quantidadeMoney, quantidadeVezesComprou);
 
-        // Dados do produto
         String nomeProduto = linhas[6];
         String modeloProduto = linhas[7];
         String marcaProduto = linhas[8];
@@ -72,7 +70,6 @@ public class Venda implements Serializable {
         int estoqueAtualProduto = Integer.parseInt(linhas[10]);
         int estoqueMinimoProduto = Integer.parseInt(linhas[11]);
 
-        // Criar lista de produtos
         List<Produto> produtos = new ArrayList<>();
         produtos.add(new Produto(nomeProduto, modeloProduto, marcaProduto, precoProduto, estoqueAtualProduto, estoqueMinimoProduto));
 

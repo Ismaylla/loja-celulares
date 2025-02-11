@@ -2,19 +2,16 @@ package view;
 
 import model.Cliente;
 import controller.ClienteController;
-import javax.swing.JOptionPane;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Gerenciar_Cliente extends JFrame {
     private JLabel painel;
-    private JButton button1;
-    private JButton button2;
-    private JButton button3;
-    private JButton button4;
-    private JButton button5;
+    private JButton buttonAdicionar;
+    private JButton buttonAtualizar;
+    private JButton buttonRemover;
+    private JButton buttonListar;
+    private JButton buttonVoltar;
 
     public Gerenciar_Cliente() {
         this.setTitle("Sistema de Gerenciar Cliente");
@@ -30,96 +27,30 @@ public class Gerenciar_Cliente extends JFrame {
         JPanel painelBotoes = new JPanel();
         painelBotoes.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
-        button1 = new JButton("Adicionar");
-        button2 = new JButton("Atualizar");
-        button3 = new JButton("Remover");
-        button4 = new JButton("Listar");
-        button5 = new JButton("Voltar");
+        buttonAdicionar = new JButton("Adicionar");
+        buttonAtualizar = new JButton("Atualizar");
+        buttonRemover = new JButton("Remover");
+        buttonListar = new JButton("Listar");
+        buttonVoltar = new JButton("Voltar");
 
-        painelBotoes.add(button1);
-        painelBotoes.add(button2);
-        painelBotoes.add(button3);
-        painelBotoes.add(button4);
-        painelBotoes.add(button5);
+        painelBotoes.add(buttonAdicionar);
+        painelBotoes.add(buttonAtualizar);
+        painelBotoes.add(buttonRemover);
+        painelBotoes.add(buttonListar);
+        painelBotoes.add(buttonVoltar);
 
         add(painelBotoes, BorderLayout.CENTER);
 
+        configurarEventos();
         setVisible(true);
+    }
 
-        button1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                abrirFormularioAdicionarCliente();
-            }
-        });
-
-        button2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ClienteController controller = new ClienteController();
-                String cpf = JOptionPane.showInputDialog("Digite o CPF do cliente que deseja atualizar:");
-                if (cpf == null || cpf.trim().isEmpty()) return;
-
-                Cliente clienteExistente = controller.buscarClientePorCpf(cpf);
-                if (clienteExistente == null) {
-                    JOptionPane.showMessageDialog(null, "Cliente não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                String novoNome = JOptionPane.showInputDialog("Novo nome (atual: " + clienteExistente.getNome() + "):", clienteExistente.getNome());
-                String novoTelefone = JOptionPane.showInputDialog("Novo telefone (atual: " + clienteExistente.getTelefone() + "):", clienteExistente.getTelefone());
-                String novoEmail = JOptionPane.showInputDialog("Novo email (atual: " + clienteExistente.getEmail() + "):", clienteExistente.getEmail());
-
-                if (novoNome != null && novoTelefone != null && novoEmail != null) {
-                    clienteExistente.setNome(novoNome);
-                    clienteExistente.setTelefone(novoTelefone);
-                    clienteExistente.setEmail(novoEmail);
-                    controller.atualizarCliente(cpf, clienteExistente);
-                    JOptionPane.showMessageDialog(null, "Cliente atualizado com sucesso!");
-                }
-            }
-        });
-
-
-        button3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                excluirCliente();
-            }
-        });
-
-        button4.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ClienteController controller = new ClienteController();
-                java.util.List<Cliente> clientes = controller.carregarClientes();
-
-                if (clientes.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Nenhum cliente encontrado!", "Lista de Clientes", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    StringBuilder listaClientes = new StringBuilder();
-                    for (Cliente cliente : clientes) {
-                        listaClientes.append(cliente.toString()).append("\n");
-                    }
-
-                    JTextArea textArea = new JTextArea(listaClientes.toString());
-                    textArea.setEditable(false);
-                    JScrollPane scrollPane = new JScrollPane(textArea);
-
-                    JOptionPane.showMessageDialog(null, scrollPane, "Lista de Clientes", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-        });
-
-
-        button5.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainView f = new MainView();
-                dispose();
-                f.setVisible(true);
-            }
-        });
+    private void configurarEventos() {
+        buttonAdicionar.addActionListener(e -> abrirFormularioAdicionarCliente());
+        buttonAtualizar.addActionListener(e -> atualizarCliente());
+        buttonRemover.addActionListener(e -> excluirCliente());
+        buttonListar.addActionListener(e -> listarClientes());
+        buttonVoltar.addActionListener(e -> voltarParaMenuPrincipal());
     }
 
     private void abrirFormularioAdicionarCliente() {
@@ -167,9 +98,31 @@ public class Gerenciar_Cliente extends JFrame {
         JOptionPane.showMessageDialog(null, "Cliente adicionado com sucesso!");
     }
 
+    private void atualizarCliente() {
+        ClienteController controller = new ClienteController();
+        String cpf = JOptionPane.showInputDialog("Digite o CPF do cliente que deseja atualizar:");
+        if (cpf == null || cpf.trim().isEmpty()) return;
 
+        Cliente clienteExistente = controller.buscarClientePorCpf(cpf);
+        if (clienteExistente == null) {
+            JOptionPane.showMessageDialog(null, "Cliente não encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    public void excluirCliente() {
+        String novoNome = JOptionPane.showInputDialog("Novo nome (atual: " + clienteExistente.getNome() + "):", clienteExistente.getNome());
+        String novoTelefone = JOptionPane.showInputDialog("Novo telefone (atual: " + clienteExistente.getTelefone() + "):", clienteExistente.getTelefone());
+        String novoEmail = JOptionPane.showInputDialog("Novo email (atual: " + clienteExistente.getEmail() + "):", clienteExistente.getEmail());
+
+        if (novoNome != null && novoTelefone != null && novoEmail != null) {
+            clienteExistente.setNome(novoNome);
+            clienteExistente.setTelefone(novoTelefone);
+            clienteExistente.setEmail(novoEmail);
+            controller.atualizarCliente(cpf, clienteExistente);
+            JOptionPane.showMessageDialog(null, "Cliente atualizado com sucesso!");
+        }
+    }
+
+    private void excluirCliente() {
         ClienteController controller = new ClienteController();
 
         String cpf = JOptionPane.showInputDialog("Digite o CPF do cliente que deseja excluir:");
@@ -195,4 +148,29 @@ public class Gerenciar_Cliente extends JFrame {
         }
     }
 
+    private void listarClientes() {
+        ClienteController controller = new ClienteController();
+        java.util.List<Cliente> clientes = controller.carregarClientes();
+
+        if (clientes.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Nenhum cliente encontrado!", "Lista de Clientes", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            StringBuilder listaClientes = new StringBuilder();
+            for (Cliente cliente : clientes) {
+                listaClientes.append(cliente.toString()).append("\n");
+            }
+
+            JTextArea textArea = new JTextArea(listaClientes.toString());
+            textArea.setEditable(false);
+            JScrollPane scrollPane = new JScrollPane(textArea);
+
+            JOptionPane.showMessageDialog(null, scrollPane, "Lista de Clientes", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void voltarParaMenuPrincipal() {
+        MainView f = new MainView();
+        dispose();
+        f.setVisible(true);
+    }
 }

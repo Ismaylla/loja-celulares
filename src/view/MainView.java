@@ -18,12 +18,10 @@ public class MainView extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Título
         titulo = new JLabel("Bem-vindo ao Sistema ElloCell", SwingConstants.CENTER);
         titulo.setFont(new Font("Arial", Font.BOLD, 24));
         add(titulo, BorderLayout.NORTH);
 
-        // Painel de botões
         JPanel painelBotoes = new JPanel();
         painelBotoes.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 15));
 

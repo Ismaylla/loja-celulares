@@ -61,21 +61,19 @@ public class ProdutoController {
 
     public void atualizarProduto(String nome, Produto novosDados) {
         carregarProdutosAntes();
-        Produto produto = buscarProdutoPorNome(nome);
-        if (produto != null) {
-            produto.setmodelo(novosDados.getmodelo());
-            produto.setMarca(novosDados.getMarca());
-            produto.setPreco(novosDados.getPreco());
-            produto.setEstoqueAtual(novosDados.getEstoqueAtual());
-            produto.setEstoqueMinimo(novosDados.getEstoqueMinimo());
-            salvarProdutos();
-            System.out.println("Produto atualizado com sucesso.");
-        } else {
-            System.out.println("Produto não encontrado.");
+        for (int i = 0; i < produtos.size(); i++) {
+            if (produtos.get(i).getNome().equalsIgnoreCase(nome)) {
+                produtos.set(i, novosDados); // Substitui o produto na lista
+                salvarProdutos();
+                System.out.println("Produto atualizado com sucesso.");
+                return;
+            }
         }
+        System.out.println("Produto não encontrado.");
     }
 
-    private void salvarProdutos() {
+
+    public void salvarProdutos() {
         try {
             ArquivoUtil.salvarLista(ARQUIVO_PRODUTOS, produtos);
         } catch (IOException e) {
@@ -83,7 +81,7 @@ public class ProdutoController {
         }
     }
 
-    private List<Produto> carregarProdutos() {
+    public List<Produto> carregarProdutos() {
         try {
             return ArquivoUtil.carregarLista(ARQUIVO_PRODUTOS);
         } catch (IOException | ClassNotFoundException e) {

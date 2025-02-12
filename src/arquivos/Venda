@@ -1,1 +1,1 @@
-nome;cpf;telefone;email;1.0;1;nome;modelo;marca;2.0;2;3;2025-02-06;3.0
+nomeCliente;cpfCliente;telefoneCliente;emailCliente;1.0;1;nomeProduto;modeloProduto;marcaProduto;2.0;2;3;2025-02-06;3.0;CorProduto;ArmazenamentoProduto;MemoriaRAMProduto;TamanhoTelaProduto;true;true;2;3

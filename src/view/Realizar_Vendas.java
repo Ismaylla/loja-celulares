@@ -121,16 +121,24 @@ public class Realizar_Vendas extends JFrame {
         if (produtos.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Nenhum produto cadastrado!", "Tabela de Produtos", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            String[] colunas = {"Nome", "Modelo", "Marca", "Preço", "Estoque Atual"};
-            String[][] dados = new String[produtos.size()][5];
+            String[] colunas = {"Código","Nome", "Modelo", "Marca", "Preço","Cor","Armazenamento","Mémoria RAM", "Tamanho tela", "5G", "Resistencia água", "Estoque Atual", "Estoque minímo"};
+            String[][] dados = new String[produtos.size()][12];
 
             for (int i = 0; i < produtos.size(); i++) {
                 Produto p = produtos.get(i);
-                dados[i][0] = p.getNome();
-                dados[i][1] = p.getmodelo();
-                dados[i][2] = p.getMarca();
-                dados[i][3] = String.format("R$ %.2f", p.getPreco());
-                dados[i][4] = String.valueOf(p.getEstoqueAtual());
+                dados[i][0] = p.getCodigo();
+                dados[i][1] = p.getNome();
+                dados[i][2] = p.getmodelo();
+                dados[i][3] = p.getMarca();
+                dados[i][4] = String.format("R$ %.2f", p.getPreco());
+                dados[i][5] = p.getCor();
+                dados[i][6] = p.getArmazenamento();
+                dados[i][7] = p.getMemoriaRAM();
+                dados[i][8] = String.format("Tela: %.2f pol", p.getTamanhoTela());
+                dados[i][9] = p.isTem5G() ? "Sim" : "Não";
+                dados[i][10] = p.isResistenciaAgua() ? "Sim" : "Não";
+                dados[i][11] = String.valueOf(p.getEstoqueAtual());
+                dados[i][12] = String.valueOf(p.getEstoqueMinimo());
             }
 
             JTable tabela = new JTable(dados, colunas);
@@ -144,6 +152,10 @@ public class Realizar_Vendas extends JFrame {
 
     private void adicionarProduto() {
         try {
+
+            String codigo = JOptionPane.showInputDialog("Digite o código do produto:");
+            if (codigo == null || codigo.trim().isEmpty()) return;
+
             String nome = JOptionPane.showInputDialog("Digite o nome do produto:");
             if (nome == null || nome.trim().isEmpty()) return;
 
@@ -154,9 +166,10 @@ public class Realizar_Vendas extends JFrame {
             if (marca == null || marca.trim().isEmpty()) return;
 
             double preco = Double.parseDouble(JOptionPane.showInputDialog("Digite o preço do produto:"));
+
             int quantidade = Integer.parseInt(JOptionPane.showInputDialog("Digite a quantidade em estoque:"));
 
-            Produto produto = new Produto(nome, modelo, marca, preco, quantidade, 0);
+            Produto produto = new Produto(codigo, nome, modelo, marca, preco, quantidade, 0);
             ProdutoController controller = new ProdutoController();
             controller.adicionarProduto(produto);
 

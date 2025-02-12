@@ -63,16 +63,22 @@ public class Venda implements Serializable {
 
         Cliente cliente = new Cliente(nomeCliente, cpfCliente, telefoneCliente, emailCliente, quantidadeMoney, quantidadeVezesComprou);
 
-        String nomeProduto = linhas[6];
-        String modeloProduto = linhas[7];
-        String marcaProduto = linhas[8];
-        double precoProduto = Double.parseDouble(linhas[9]);
-        int estoqueAtualProduto = Integer.parseInt(linhas[10]);
-        int estoqueMinimoProduto = Integer.parseInt(linhas[11]);
+        String codigoProduto = linhas[6];
+        String nomeProduto = linhas[7];
+        String modeloProduto = linhas[8];
+        String marcaProduto = linhas[9];
+        double precoProduto = Double.parseDouble(linhas[10]);
+        String corProduto = linhas[11];
+        String armazenamentoProduto = linhas[12];
+        String memoriaRAMProduto = linhas[13];
+        double tamanhoTelaProduto = Double.parseDouble(linhas[14]);
+        boolean tem5GProduto = Boolean.parseBoolean(linhas[15]);
+        boolean resistenciaAguaProduto = Boolean.parseBoolean(linhas[16]);
+        int estoqueAtualProduto = Integer.parseInt(linhas[17]);
+        int estoqueMinimoProduto = Integer.parseInt(linhas[18]);
 
         List<Produto> produtos = new ArrayList<>();
-        produtos.add(new Produto(nomeProduto, modeloProduto, marcaProduto, precoProduto, estoqueAtualProduto, estoqueMinimoProduto));
-
+        produtos.add(new Produto(codigoProduto, nomeProduto, modeloProduto, marcaProduto, precoProduto, corProduto, armazenamentoProduto, memoriaRAMProduto, tamanhoTelaProduto, tem5GProduto, resistenciaAguaProduto, estoqueAtualProduto, estoqueMinimoProduto));
         return new Venda(cliente, produtos, java.time.LocalDate.now(), quantidadeMoney);
     }
 

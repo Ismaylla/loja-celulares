@@ -19,7 +19,7 @@ public class TelaVendas extends JFrame {
 
     private void initializeUI() {
         setTitle("Tela de Vendas");
-        setSize(900, 559);
+        setSize(746, 559);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 

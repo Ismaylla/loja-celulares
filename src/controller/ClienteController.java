@@ -46,6 +46,12 @@ public class ClienteController {
         }
     }
 
+    public void atualizaClientePosCompra(Cliente clienteVenda, double valorTotal){
+        clientes = carregarClientes();
+        clienteVenda.setupClientePosCompra(valorTotal);
+        atualizarCliente(clienteVenda.getCpf(), clienteVenda);
+    }
+
     public Cliente buscarClientePorCpf(String cpf) {
         if (!validarCpf(cpf)) {
             System.out.println("CPF inválido. Deve conter 11 dígitos numéricos.");
@@ -59,6 +65,7 @@ public class ClienteController {
         }
         return null;
     }
+
 
     public void removerCliente(String cpf) {
         if (!validarCpf(cpf)) {
@@ -89,14 +96,14 @@ public class ClienteController {
             cliente.setNome(novosDados.getNome());
             cliente.setTelefone(novosDados.getTelefone());
             cliente.setEmail(novosDados.getEmail());
-            cliente.setQuantidade_money(novosDados.getQuantidade_money());
-            cliente.setQuantidade_vezes_comprou();
+            cliente.setDinheiroTotalGasto(novosDados.getDinheiroTotalGasto());
             salvarClientes();
             System.out.println("Cliente atualizado com sucesso.");
         } else {
             System.out.println("Cliente não encontrado.");
         }
     }
+
 
     private void salvarClientes() {
         try {

@@ -58,10 +58,10 @@ public class Venda implements Serializable {
         String cpfCliente = linhas[1];
         String telefoneCliente = linhas[2];
         String emailCliente = linhas[3];
-        double quantidadeMoney = Double.parseDouble(linhas[4]);
+        double dinheiroTotalGasto = Double.parseDouble(linhas[4]);
         int quantidadeVezesComprou = Integer.parseInt(linhas[5]);
 
-        Cliente cliente = new Cliente(nomeCliente, cpfCliente, telefoneCliente, emailCliente, quantidadeMoney, quantidadeVezesComprou);
+        Cliente cliente = new Cliente(nomeCliente, cpfCliente, telefoneCliente, emailCliente, dinheiroTotalGasto, quantidadeVezesComprou);
 
         String codigoProduto = linhas[6];
         String nomeProduto = linhas[7];
@@ -79,7 +79,7 @@ public class Venda implements Serializable {
 
         List<Produto> produtos = new ArrayList<>();
         produtos.add(new Produto(codigoProduto, nomeProduto, modeloProduto, marcaProduto, precoProduto, corProduto, armazenamentoProduto, memoriaRAMProduto, tamanhoTelaProduto, tem5GProduto, resistenciaAguaProduto, estoqueAtualProduto, estoqueMinimoProduto));
-        return new Venda(cliente, produtos, java.time.LocalDate.now(), quantidadeMoney);
+        return new Venda(cliente, produtos, java.time.LocalDate.now(), dinheiroTotalGasto);
     }
 
     @Override

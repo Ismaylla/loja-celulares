@@ -4,9 +4,9 @@ import controller.ProdutoController;
 import model.Produto;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 public class TelaGerenciarEstoque extends JFrame {
 
@@ -23,27 +23,36 @@ public class TelaGerenciarEstoque extends JFrame {
         setTitle("Gerenciar Estoque");
         setSize(746, 559);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         // Definindo a cor de fundo de toda a tela
         getContentPane().setBackground(Color.LIGHT_GRAY); // Cor de fundo clara
 
         // Painel com botões para as operações
-        JPanel painelOpcoes = new JPanel();
-        painelOpcoes.setLayout(new BoxLayout(painelOpcoes, BoxLayout.Y_AXIS));
-        painelOpcoes.setPreferredSize(new Dimension(200, 0));
+        JPanel painelRodape = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        painelRodape.setBackground(Color.LIGHT_GRAY);
 
         JButton btnAdicionar = new JButton("Adicionar Produto");
         JButton btnRemover = new JButton("Remover Produto");
-        JButton btnAtualizarEstoque = new JButton("Atualizar Estoque");
+        JButton btnAtualizarProduto = new JButton("Atualizar Produto");
         JButton btnListarProdutos = new JButton("Listar Produtos");
+        JButton btnVoltar = new JButton("Voltar"); //botao para voltar a telavendas
 
-        painelOpcoes.add(btnAdicionar);
-        painelOpcoes.add(btnRemover);
-        painelOpcoes.add(btnAtualizarEstoque);
-        painelOpcoes.add(btnListarProdutos);
 
-        add(painelOpcoes, BorderLayout.WEST);
+        painelRodape.add(btnAdicionar);
+        painelRodape.add(btnRemover);
+        painelRodape.add(btnAtualizarProduto);
+        painelRodape.add(btnListarProdutos);
+        painelRodape.add(btnVoltar);
+
+        add(painelRodape, BorderLayout.SOUTH);
+
+        btnVoltar.addActionListener(e -> {
+            telaVendas.setVisible(true);
+            dispose();
+        });
+
 
         // Painel para mostrar informações e interações
         JPanel painelDetalhes = new JPanel();
@@ -137,13 +146,16 @@ public class TelaGerenciarEstoque extends JFrame {
         });
 
         // Ação para Remover Produto
-        // Ação para Remover Produto
         btnRemoverProduto.addActionListener(e -> {
             String nomeProdutoParcial = txtBuscarRemover.getText().trim();
-            List<Produto> produtosEncontrados = produtoController.carregarProdutos();
 
-            // Filtra produtos com o nome fornecido
-            produtosEncontrados.removeIf(produto -> !produto.getNome().toLowerCase().contains(nomeProdutoParcial.toLowerCase()));
+            // impede uma busca se o campo estiver vazio
+            if(nomeProdutoParcial.isEmpty()){
+                JOptionPane.showMessageDialog(null, "Por favor, insira o nome do produto.");
+                return;
+            }
+
+            List<Produto> produtosEncontrados = produtoController.carregarProdutos();
 
             // Verifica se encontrou algum produto
             if (produtosEncontrados.isEmpty()) {
@@ -177,6 +189,108 @@ public class TelaGerenciarEstoque extends JFrame {
 
             // Limpa o campo de busca após a operação
             txtBuscarRemover.setText("");
+        });
+
+        btnAtualizarProduto.addActionListener(e -> {
+            // Solicita ao usuário o nome do produto para atualizar
+            String nomeProdutoParcial = JOptionPane.showInputDialog("Digite o nome do produto para atualizar:");
+
+            // Verifica se o usuário clicou em "Cancelar" ou fechou a caixa de diálogo
+            if (nomeProdutoParcial == null || nomeProdutoParcial.trim().isEmpty()) {
+                return; // Sai do método sem fazer mais nada
+            }
+
+            // Carrega a lista de produtos
+            List<Produto> produtosEncontrados = produtoController.carregarProdutos();
+
+            // Filtra os produtos para encontrar aqueles que contêm o nome inserido
+            List<Produto> produtosFiltrados = produtosEncontrados.stream()
+                    .filter(produto -> produto.getNome().toLowerCase().contains(nomeProdutoParcial.toLowerCase()))
+                    .collect(Collectors.toList());
+
+            // Verifica se encontrou produtos
+            if (produtosFiltrados.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Nenhum produto encontrado com esse nome.");
+            } else {
+                // Exibe os produtos encontrados para o usuário
+                String[] produtosStr = produtosFiltrados.stream()
+                        .map(produto -> produto.getNome() + " - " + produto.getModelo())
+                        .toArray(String[]::new);
+
+                // Mostrar um diálogo com a lista de produtos encontrados
+                String produtoSelecionado = (String) JOptionPane.showInputDialog(
+                        null,
+                        "Escolha um produto para atualizar:",
+                        "Selecionar Produto",
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        produtosStr,
+                        produtosStr[0]
+                );
+
+                if (produtoSelecionado != null) {
+                    // Obtém o nome do produto para atualização
+                    String nomeProduto = produtoSelecionado.split(" - ")[0];
+
+                    // Busca o produto completo para atualização
+                    Produto produto = produtoController.buscarProdutoPorNome(nomeProduto);
+
+                    // Pede o novo valor e estoque
+                    String novoValorStr = JOptionPane.showInputDialog("Digite o novo valor do produto:");
+                    String novoEstoqueStr = JOptionPane.showInputDialog("Digite o novo estoque do produto:");
+
+                    try {
+                        // Atualiza o produto com o novo preço e estoque
+                        double novoValor = Double.parseDouble(novoValorStr);
+                        int novoEstoque = Integer.parseInt(novoEstoqueStr);
+
+                        // Atualiza os dados do produto
+                        produto.setPreco(novoValor);
+                        produto.setEstoqueAtual(novoEstoque);
+
+                        // Chama o método de atualização no controlador, passando o nome e o Produto atualizado
+                        produtoController.atualizarProduto(produto.getNome(), produto);
+
+                        JOptionPane.showMessageDialog(null, "Produto atualizado com sucesso!");
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Por favor, insira valores válidos para preço e estoque.");
+                    }
+                }
+            }
+        });
+
+
+        // Área de Exibição de Produtos
+        JPanel painelListarProdutos = new JPanel();
+        painelListarProdutos.setLayout(new BorderLayout());
+
+        JTextArea textAreaProdutos = new JTextArea(15, 50);
+        textAreaProdutos.setEditable(false); // Para que o usuário não consiga editar
+        JScrollPane scrollPaneProdutos = new JScrollPane(textAreaProdutos);
+        painelListarProdutos.add(scrollPaneProdutos, BorderLayout.CENTER);
+        painelDetalhes.add(painelListarProdutos, "Listar");
+
+        btnListarProdutos.addActionListener(e -> {
+            // Limpa o JTextArea para não duplicar os produtos
+            textAreaProdutos.setText("");
+
+            // Carrega os produtos
+            List<Produto> produtos = produtoController.carregarProdutos();
+
+            if (produtos.isEmpty()) {
+                textAreaProdutos.append("Nenhum produto cadastrado.\n");
+            } else {
+                // Exibe os produtos no JTextArea
+                for (Produto produto : produtos) {
+                    textAreaProdutos.append("Nome: " + produto.getNome() + "\n");
+                    textAreaProdutos.append("Preço: " + produto.getPreco() + "\n");
+                    textAreaProdutos.append("Estoque Atual: " + produto.getEstoqueAtual() + "\n");
+                    textAreaProdutos.append("--------------------------------------------------------------------------\n");
+                }
+            }
+
+            // Exibe o painel de Listagem de Produtos
+            ((CardLayout) painelDetalhes.getLayout()).show(painelDetalhes, "Listar");
         });
 
 

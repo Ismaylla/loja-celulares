@@ -11,6 +11,7 @@ public class TelaVendas extends JFrame {
     private JPanel painelProdutoInfo;
     private JPanel barraCarrinho;
     private JLabel lblProdutoNoCarrinho;
+    private Produto produtoCarrinho; // Variável para armazenar o produto no carrinho
 
     public TelaVendas(ProdutoController produtoController) {
         this.produtoController = produtoController;
@@ -21,6 +22,7 @@ public class TelaVendas extends JFrame {
         setTitle("Tela de Vendas");
         setSize(746, 559);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         // Criação da barra de tarefas (barra superior)
@@ -96,8 +98,13 @@ public class TelaVendas extends JFrame {
 
                 // Lógica para adicionar o produto ao carrinho
                 btnAdicionarCarrinho.addActionListener(e1 -> {
-                    lblProdutoNoCarrinho.setText("<html><strong>Produto:</strong> " + produto.getNome() +
-                            "<br><strong>Preço:</strong> R$ " + produto.getPreco() + "</html>");
+                    if (produto.getEstoqueAtual() > 0) {
+                        produtoCarrinho = produto; // Salva o produto no carrinho
+                        lblProdutoNoCarrinho.setText("<html><strong>Produto:</strong> " + produto.getNome() +
+                                "<br><strong>Preço:</strong> R$ " + produto.getPreco() + "</html>");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Produto sem estoque disponível.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    }
                 });
                 painelProdutoInfo.revalidate();
                 painelProdutoInfo.repaint();
@@ -138,9 +145,14 @@ public class TelaVendas extends JFrame {
 
         // Função para o botão "Finalizar Compra"
         btnFinalizarCompra.addActionListener(e -> {
-            if (!lblProdutoNoCarrinho.getText().equals("Carrinho Vazio")) {
+            if (produtoCarrinho != null && produtoCarrinho.getEstoqueAtual() > 0) {
+                // Atualiza o estoque do produto após a venda
+                produtoCarrinho.setEstoqueAtual(produtoCarrinho.getEstoqueAtual() - 1);
+                produtoController.atualizarProduto(produtoCarrinho.getNome(), produtoCarrinho);
+
                 JOptionPane.showMessageDialog(this, "Compra finalizada com sucesso!", "Finalizar Compra", JOptionPane.INFORMATION_MESSAGE);
                 lblProdutoNoCarrinho.setText("Carrinho Vazio");
+                produtoCarrinho = null; // Limpa o produto no carrinho
             } else {
                 JOptionPane.showMessageDialog(this, "Adicione um produto ao carrinho para finalizar a compra.", "Erro", JOptionPane.WARNING_MESSAGE);
             }

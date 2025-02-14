@@ -18,4 +18,23 @@ public class ArquivoUtil {
             return (List<T>) ois.readObject();
         }
     }
+
+    public static String quote(String text) {
+        if (text == null) return "";
+        return "\"" + text.replace("\"", "\"\"") + "\"";
+    }
+
+    public static String unquote(String text) {
+        if (text == null) return "";
+        if (text.startsWith("\"") && text.endsWith("\"")) {
+            text = text.substring(1, text.length() - 1);
+        }
+        return text.replace("\"\"", "\"");
+    }
+
+    public static String[] splitCSV(String line) {
+        if (line == null || line.trim().isEmpty()) {
+            return new String[0];
+        }
+        return line.split(",(?=(?:[^\"]\"[^\"]\")[^\"]$)"); }
 }

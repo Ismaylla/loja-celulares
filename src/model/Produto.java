@@ -1,5 +1,6 @@
 package model;
 
+import util.ArquivoUtil;
 import java.io.Serializable;
 
 public class Produto implements Serializable {
@@ -106,40 +107,39 @@ public class Produto implements Serializable {
 	}
 
 
-	public Produto CriarProdutoPartiDaLinha(String CriarProduto) {
-		String[] linhas = CriarProduto.split(";");
-		String codigo = linhas[0];
-		String nome = linhas[1];
-		String modelo = linhas[2];
-		String marca = linhas[3];
+	public static Produto CriarProdutoPartiDaLinha(String CriarProduto) {
+		String[] linhas = ArquivoUtil.splitCSV(CriarProduto);
+		String codigo = ArquivoUtil.unquote(linhas[0]);
+		String nome = ArquivoUtil.unquote(linhas[1]);
+		String modelo = ArquivoUtil.unquote(linhas[2]);
+		String marca = ArquivoUtil.unquote(linhas[3]);
 		double preco = Double.parseDouble(linhas[4]);
-		String cor = linhas[5];
-		String armazenamento = linhas[6];
-		String memoriaRAM = linhas[7];
+		String cor = ArquivoUtil.unquote(linhas[5]);
+		String armazenamento = ArquivoUtil.unquote(linhas[6]);
+		String memoriaRAM = ArquivoUtil.unquote(linhas[7]);
 		double tamanhoTela = Double.parseDouble(linhas[8]);
 		boolean tem5G = Boolean.parseBoolean(linhas[9]);
 		boolean resistenciaAgua = Boolean.parseBoolean(linhas[10]);
 		int estoqueAtual = Integer.parseInt(linhas[11]);
 		int estoqueMinimo = Integer.parseInt(linhas[12]);
+
 		return new Produto(codigo, nome, modelo, marca, preco, cor, armazenamento, memoriaRAM, tamanhoTela, tem5G, resistenciaAgua, estoqueAtual, estoqueMinimo);
 	}
 
 	@Override
 	public String toString() {
-		return "Produto{" +
-				"codigo='" + codigo + '\'' +
-				", nome='" + nome + '\'' +
-				", modelo='" + modelo + '\'' +
-				", marca='" + marca + '\'' +
-				", preco=" + preco +
-				", cor='" + cor + '\'' +
-				", armazenamento='" + armazenamento + '\'' +
-				", memoriaRAM='" + memoriaRAM + '\'' +
-				", tamanhoTela=" + tamanhoTela +
-				", tem5G=" + tem5G +
-				", resistenciaAgua=" + resistenciaAgua +
-				", estoqueAtual=" + estoqueAtual +
-				", estoqueMinimo=" + estoqueMinimo +
-				'}';
+		return ArquivoUtil.quote(codigo) + ";" +
+				ArquivoUtil.quote(nome) + ";" +
+				ArquivoUtil.quote(modelo) + ";" +
+				ArquivoUtil.quote(marca) + ";" +
+				String.valueOf(preco) + ";" +
+				ArquivoUtil.quote(cor) + ";" +
+				ArquivoUtil.quote(armazenamento) + ";" +
+				ArquivoUtil.quote(memoriaRAM) + ";" +
+				String.valueOf(tamanhoTela) + ";" +
+				String.valueOf(tem5G) + ";" +
+				String.valueOf(resistenciaAgua) + ";" +
+				String.valueOf(estoqueAtual) + ";" +
+				String.valueOf(estoqueMinimo);
 	}
 }

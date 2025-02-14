@@ -1,4 +1,6 @@
 package model;
+import util.ArquivoUtil;
+
 import java.io.Serializable;
 
 public class Cliente implements Serializable {
@@ -69,11 +71,11 @@ public class Cliente implements Serializable {
     }
 
     public Cliente CriarClientePartirdaLinha(String CriarCliente){
-        String[] linhas = CriarCliente.split(";");
-        String nome = linhas[0];
-        String cpf = linhas[1];
-        String telefone = linhas[2];
-        String email = linhas[3];
+        String[] linhas = ArquivoUtil.splitCSV(CriarCliente);
+        String nome = ArquivoUtil.unquote(linhas[0]);
+        String cpf = ArquivoUtil.unquote(linhas[1]);
+        String telefone = ArquivoUtil.unquote(linhas[2]);
+        String email = ArquivoUtil.unquote(linhas[3]);
         Double dinheiroTotalGasto = Double.parseDouble(linhas[4]);
         int quantidadeVezesComprou = Integer.parseInt(linhas[5]);
         return new Cliente(nome, cpf, telefone, email, dinheiroTotalGasto, quantidadeVezesComprou);
@@ -81,10 +83,11 @@ public class Cliente implements Serializable {
 
     @Override
     public String toString() {
-        return "Cliente{" +
-                "nome='" + nome + '\'' +
-                ", cpf='" + cpf + '\'' +
-                ", telefone='" + telefone + '\'' +
-                '}';
+        return ArquivoUtil.quote(nome) + ";" +
+                ArquivoUtil.quote(cpf) + ";" +
+                ArquivoUtil.quote(telefone) + ";" +
+                ArquivoUtil.quote(email) + ";" +
+                String.valueOf(dinheiroTotalGasto) + ";" +
+                String.valueOf(quantidadeVezesComprou);
     }
 }

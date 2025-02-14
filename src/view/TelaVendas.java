@@ -2,6 +2,7 @@ package view;
 
 import controller.ProdutoController;
 import controller.ClienteController;
+import controller.VendaController;
 import model.Produto;
 import javax.swing.*;
 import java.awt.*;
@@ -192,6 +193,12 @@ public class TelaVendas extends JFrame {
             TelaGerenciarCliente telaGerenciarCliente = new TelaGerenciarCliente(clienteController, TelaVendas.this);
             telaGerenciarCliente.setVisible(true);
             TelaVendas.this.setVisible(false);
+        });
+
+        btnRelatoriosRodape.addActionListener(e -> {
+            VendaController vendaController = new VendaController();
+            TelaRelatorio telaRelatorio = new TelaRelatorio(vendaController);
+            telaRelatorio.setVisible(true);
         });
 
         return rodape;

@@ -3,15 +3,15 @@ package controller;
 import model.Cliente;
 import model.Produto;
 import model.Venda;
-
 import util.ArquivoUtil;
+import validator.VendaValidator;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VendaController {
+public class VendaController{
 
     private static final String ARQUIVO_VENDAS = System.getProperty("user.dir") + "/src/arquivos/venda";
     private List<Venda> vendas;
@@ -27,10 +27,15 @@ public class VendaController {
     public void registrarVenda(Cliente cliente, List<Produto> produtosVendidos, double valorTotal) {
         carregarVendasAntes();
         Venda venda = new Venda(cliente, produtosVendidos, LocalDate.now(), valorTotal);
+        if (!VendaValidator.validarVenda(venda)) {
+            System.out.println("Erro: Dados inválidos para a venda.");
+            return;
+        }
+
         vendas.add(venda);
         ClienteController clienteController = new ClienteController();
         cliente.setupClientePosCompra(valorTotal);
-        clienteController.atualizaClientePosCompra(cliente, valorTotal); //sei la
+        clienteController.atualizaClientePosCompra(cliente, valorTotal);
         salvarVendas();
         System.out.println("Venda registrada com sucesso.");
     }

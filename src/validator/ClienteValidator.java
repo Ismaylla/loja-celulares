@@ -38,7 +38,7 @@ public class ClienteValidator {
             return false;
         }
         if (!validarCpf(cliente.getCpf())) {
-            System.out.println("CPF inválido. Deve conter 11 dígitos numéricos.");
+            System.out.println("CPF inválido. Deve conter 11 dígitos numéricos (APENAS NÚMEROS)");
             return false;
         }
         if (!validarEmail(cliente.getEmail())) {
@@ -46,7 +46,7 @@ public class ClienteValidator {
             return false;
         }
         if (!validarTelefone(cliente.getTelefone())) {
-            System.out.println("Telefone inválido. Formato esperado: DDD + Número.");
+            System.out.println("Telefone inválido. Formato esperado: XX00000-0000");
             return false;
         }
         return true;

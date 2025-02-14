@@ -1,6 +1,7 @@
 package view;
 
 import controller.ClienteController;
+import validator.ClienteValidator;
 import model.Cliente;
 import javax.swing.*;
 import java.awt.*;
@@ -27,21 +28,20 @@ public class TelaGerenciarCliente extends JFrame {
 
         getContentPane().setBackground(Color.LIGHT_GRAY);
 
-        JPanel painelRodape = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        // Rodapé com os botões
+        JPanel painelRodape = new JPanel(new GridLayout(1, 5, 10, 10)); // Ajustado para GridLayout
         painelRodape.setBackground(Color.LIGHT_GRAY);
 
         JButton btnAdicionarCliente = new JButton("Adicionar Cliente");
         JButton btnRemoverCliente = new JButton("Remover Cliente");
         JButton btnAtualizarCliente = new JButton("Atualizar Cliente");
         JButton btnListarCliente = new JButton("Listar Clientes");
-        JButton btnAtualizarClientePosCompra = new JButton("Atualizar Pós-Compra");
         JButton btnVoltar = new JButton("Voltar");
 
         painelRodape.add(btnAdicionarCliente);
         painelRodape.add(btnRemoverCliente);
         painelRodape.add(btnAtualizarCliente);
         painelRodape.add(btnListarCliente);
-        painelRodape.add(btnAtualizarClientePosCompra);
         painelRodape.add(btnVoltar);
 
         add(painelRodape, BorderLayout.SOUTH);
@@ -61,7 +61,7 @@ public class TelaGerenciarCliente extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        String[] labels = {"Nome", "CPF", "Telefone", "Email", "Dinheiro Total Gasto", "Quantidade de compra"};
+        String[] labels = {"Nome", "CPF", "Telefone (XX00000-0000", "Email", "Dinheiro Total Gasto", "Quantidade de compra"};
         JTextField[] textFields = new JTextField[labels.length];
 
         for (int i = 0; i < labels.length; i++) {
@@ -78,6 +78,8 @@ public class TelaGerenciarCliente extends JFrame {
         gbc.gridx = 1;
         gbc.gridy = labels.length;
         painelAdicionar.add(btnSalvarCliente, gbc);
+
+        painelDetalhes.add(painelAdicionar, "Adicionar");
 
         // Ação para salvar cliente
         btnSalvarCliente.addActionListener(e -> {
@@ -113,31 +115,87 @@ public class TelaGerenciarCliente extends JFrame {
         gbc.gridy = 1;
         painelRemover.add(btnConfirmarRemocao, gbc);
 
-        btnRemoverCliente.addActionListener(e -> exibirDialogoRemoverCliente(txtBuscarRemover));
+        painelDetalhes.add(painelRemover, "Remover");
 
-        JScrollPane scrollPane = new JScrollPane(painelDetalhes);
-        add(scrollPane, BorderLayout.CENTER);
+        btnRemoverCliente.addActionListener(e -> {
+            ((CardLayout) painelDetalhes.getLayout()).show(painelDetalhes, "Remover");
+        });
+
+        btnConfirmarRemocao.addActionListener(e -> exibirDialogoRemoverCliente(txtBuscarRemover));
 
         // Ações dos Botões
         btnAdicionarCliente.addActionListener(e -> ((CardLayout) painelDetalhes.getLayout()).show(painelDetalhes, "Adicionar"));
         btnRemoverCliente.addActionListener(e -> ((CardLayout) painelDetalhes.getLayout()).show(painelDetalhes, "Remover"));
 
+        // Listar Cliente
+        // Listar Cliente
+        btnListarCliente.addActionListener(e -> {
+            List<Cliente> clientes = clienteController.carregarClientes();
+            StringBuilder clientesInfo = new StringBuilder();
+
+            // Adiciona as informações de cada cliente com linha separadora
+            for (Cliente cliente : clientes) {
+                clientesInfo.append("Nome: ").append(cliente.getNome()).append("\n")
+                        .append("CPF: ").append(cliente.getCpf()).append("\n")
+                        .append("Telefone: ").append(cliente.getTelefone()).append("\n")
+                        .append("Email: ").append(cliente.getEmail()).append("\n")
+                        .append("Dinheiro Total Gasto: R$ ").append(cliente.getDinheiroTotalGasto()).append("\n")
+                        .append("Quantidade de Compras: ").append(cliente.getQuantidadeVezesComprou()).append("\n")
+                        .append("-----------------------------------------------------------------------------------------------------\n");
+            }
+
+            // Exibe os dados no JTextArea
+            JTextArea textArea = new JTextArea(20, 50);  // Definindo o tamanho da área
+            textArea.setText(clientesInfo.toString());
+            textArea.setEditable(false);  // Torna a área somente leitura
+            textArea.setBackground(Color.LIGHT_GRAY);  // Define a cor do fundo
+            textArea.setFont(new Font("Arial", Font.PLAIN, 14));  // Fonte e tamanho
+
+            // Cria um JScrollPane para tornar a área rolável
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            JOptionPane.showMessageDialog(this, scrollPane, "Clientes cadastrados", JOptionPane.INFORMATION_MESSAGE);
+        });
+
+
+        // Atualizar Cliente
         btnAtualizarCliente.addActionListener(e -> {
-            String cpfClienteParcial = JOptionPane.showInputDialog("Digite o CPF do cliente para atualizar:");
-            if (cpfClienteParcial != null && !cpfClienteParcial.trim().isEmpty()) {
-                atualizarCliente(cpfClienteParcial);
+            String cpfParcial = JOptionPane.showInputDialog(this, "Digite o CPF do cliente que deseja atualizar:");
+            if (cpfParcial != null && !cpfParcial.isEmpty()) {
+                atualizarCliente(cpfParcial);
             }
         });
+
+        JScrollPane scrollPane = new JScrollPane(painelDetalhes);
+        add(scrollPane, BorderLayout.CENTER);
     }
 
     private boolean validaCampos(JTextField[] campos) {
+        // Valida se todos os campos foram preenchidos
         for (JTextField campo : campos) {
             if (campo.getText().isEmpty()) {
                 return false;
             }
         }
+
+        // Cria o cliente temporário para validação
+        String nome = campos[0].getText();
+        String cpf = campos[1].getText();
+        String telefone = campos[2].getText();
+        String email = campos[3].getText();
+        double dinheiroGasto = Double.parseDouble(campos[4].getText());
+        int qtdCompra = Integer.parseInt(campos[5].getText());
+
+        Cliente clienteTemp = new Cliente(nome, cpf, telefone, email, dinheiroGasto, qtdCompra);
+
+        // Valida o cliente usando o ClienteValidator
+        if (!ClienteValidator.validarCliente(clienteTemp)) {
+            JOptionPane.showMessageDialog(this, "Por favor, corrija os erros de validação.");
+            return false;
+        }
+
         return true;
     }
+
 
     private void exibirDialogoRemoverCliente(JTextField txtBuscarRemover) {
         String cpfCliente = txtBuscarRemover.getText().trim();
@@ -147,42 +205,22 @@ public class TelaGerenciarCliente extends JFrame {
             return;
         }
 
-        List<Cliente> clientesEncontrados = clienteController.carregarClientes();
+        Cliente cliente = clienteController.buscarClientePorCpf(cpfCliente);
 
-        if (clientesEncontrados.isEmpty()) {
+        if (cliente == null) {
             JOptionPane.showMessageDialog(this, "Nenhum cliente encontrado com esse CPF.");
         } else {
-            String[] clientesStr = clientesEncontrados.stream()
-                    .map(cliente -> cliente.getNome() + " - " + cliente.getCpf())
-                    .toArray(String[]::new);
-
-            String clienteSelecionado = (String) JOptionPane.showInputDialog(
-                    this,
-                    "Escolha um Cliente para remover:",
-                    "Selecionar Cliente",
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    clientesStr,
-                    clientesStr[0]
-            );
-
-            if (clienteSelecionado != null) {
-                String cpf = clienteSelecionado.split(" - ")[1];
-                clienteController.removerCliente(cpf);
+            int resposta = JOptionPane.showConfirmDialog(this,
+                    "Tem certeza que deseja remover o cliente: " + cliente.getNome(),
+                    "Confirmar Remoção",
+                    JOptionPane.YES_NO_OPTION);
+            if (resposta == JOptionPane.YES_OPTION) {
+                clienteController.removerCliente(cpfCliente);
                 JOptionPane.showMessageDialog(this, "Cliente removido com sucesso!");
             }
         }
 
-        txtBuscarRemover.setText("");
-    }
-
-    private void removerClientePorCpf(String cpf) {
-        if (!cpf.isEmpty()) {
-            clienteController.removerCliente(cpf);
-            JOptionPane.showMessageDialog(this, "Cliente removido com sucesso.");
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, insira um CPF válido.");
-        }
+        txtBuscarRemover.setText("");  // Limpa o campo de CPF
     }
 
     private void atualizarCliente(String cpfClienteParcial) {
@@ -213,25 +251,30 @@ public class TelaGerenciarCliente extends JFrame {
                 String cpfCliente = clienteSelecionado.split(" - ")[1];
                 Cliente cliente = clienteController.buscarClientePorCpf(cpfCliente);
 
-                String novoNome = JOptionPane.showInputDialog("Alterar nome:");
-                String novoTelefone = JOptionPane.showInputDialog("Alterar Telefone:");
-                String novoEmail = JOptionPane.showInputDialog("Alterar E-mail:");
+                String novoNome = JOptionPane.showInputDialog("Alterar nome:", cliente.getNome());
+                if (novoNome != null && !novoNome.isEmpty()) {
+                    cliente.setNome(novoNome);
+                }
 
-                cliente.setNome(novoNome);
-                cliente.setTelefone(novoTelefone);
-                cliente.setEmail(novoEmail);
+                String novoTelefone = JOptionPane.showInputDialog("Alterar Telefone:", cliente.getTelefone());
+                if (novoTelefone != null && !novoTelefone.isEmpty()) {
+                    cliente.setTelefone(novoTelefone);
+                }
 
-                clienteController.atualizarCliente(cliente.getNome(), cliente);
+                String novoEmail = JOptionPane.showInputDialog("Alterar E-mail:", cliente.getEmail());
+                if (novoEmail != null && !novoEmail.isEmpty()) {
+                    cliente.setEmail(novoEmail);
+                }
+
+                clienteController.atualizarCliente(cliente.getCpf(), cliente);  // Ajuste para utilizar o CPF
                 JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
+                atualizarListaClientes();  // Recarrega a lista de clientes
             }
-
         }
     }
 
-
-
-
-
-
-
+    private void atualizarListaClientes() {
+        // Recarrega a lista de clientes ao atualizar um cliente
+        clienteController.carregarClientes();
+    }
 }

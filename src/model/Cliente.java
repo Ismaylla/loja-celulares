@@ -68,6 +68,7 @@ public class Cliente implements Serializable {
     public void setupClientePosCompra(double valorTotal){
         contadorCompras();
         setDinheiroTotalGasto(valorTotal);
+
     }
 
     public Cliente CriarClientePartirdaLinha(String CriarCliente){

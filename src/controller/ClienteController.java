@@ -3,7 +3,6 @@ package controller;
 import model.Cliente;
 import util.ArquivoUtil;
 import validator.ClienteValidator;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

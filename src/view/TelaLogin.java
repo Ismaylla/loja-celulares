@@ -34,6 +34,7 @@ public class TelaLogin {
         JFrame frame = new JFrame("Tela de Login");
         frame.setSize(746, 559);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
         frame.setLayout(null);
 
         // Cor de fundo da tela

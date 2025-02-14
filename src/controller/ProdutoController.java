@@ -2,6 +2,8 @@ package controller;
 
 import model.Produto;
 import util.ArquivoUtil;
+import validator.ProdutoValidator;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,24 +11,30 @@ import java.util.List;
 public class ProdutoController {
     private static final String ARQUIVO_PRODUTOS = System.getProperty("user.dir") + "/src/arquivos/Produto";
     private List<Produto> produtos;
-
     public ProdutoController() {
         this.produtos = carregarProdutos();
     }
 
-    private void carregarProdutosAntes() {
-        this.produtos = carregarProdutos();
-    }
-
     public void adicionarProduto(Produto produto) {
-        carregarProdutosAntes();
+        if (!ProdutoValidator.validarProduto(produto)) {
+            System.out.println("Erro: Dados inválidos para o produto.");
+            return;
+        }
+
+        produtos = carregarProdutos();
+
+        if (buscarProdutoPorNome(produto.getNome()) != null) {
+            System.out.println("Erro: Já existe um produto com este nome.");
+            return;
+        }
+
         produtos.add(produto);
         salvarProdutos();
         System.out.println("Produto adicionado com sucesso: " + produto.getNome());
     }
 
     public void listarProdutos() {
-        carregarProdutosAntes();
+        produtos = carregarProdutos();
         if (produtos.isEmpty()) {
             System.out.println("Nenhum produto cadastrado.");
         } else {
@@ -37,7 +45,7 @@ public class ProdutoController {
     }
 
     public Produto buscarProdutoPorNome(String nome) {
-        carregarProdutosAntes();
+        produtos = carregarProdutos();
         for (Produto produto : produtos) {
             if (produto.getNome().equalsIgnoreCase(nome)) {
                 return produto;
@@ -47,7 +55,6 @@ public class ProdutoController {
     }
 
     public void removerProduto(String nome) {
-        carregarProdutosAntes();
         Produto produto = buscarProdutoPorNome(nome);
         if (produto != null) {
             produtos.remove(produto);
@@ -59,18 +66,32 @@ public class ProdutoController {
     }
 
     public void atualizarProduto(String nome, Produto novosDados) {
-        carregarProdutosAntes();
-        for (int i = 0; i < produtos.size(); i++) {
-            if (produtos.get(i).getNome().equalsIgnoreCase(nome)) {
-                produtos.set(i, novosDados); // Substitui o produto na lista
-                salvarProdutos();
-                System.out.println("Produto atualizado com sucesso.");
-                return;
-            }
+        if (!ProdutoValidator.validarProduto(novosDados)) {
+            System.out.println("Erro: Dados inválidos para o produto.");
+            return;
         }
-        System.out.println("Produto não encontrado.");
-    }
 
+        produtos = carregarProdutos();
+        Produto produto = buscarProdutoPorNome(nome);
+        if (produto != null) {
+            produto.setNome(novosDados.getNome());
+            produto.setModelo(novosDados.getModelo());
+            produto.setMarca(novosDados.getMarca());
+            produto.setPreco(novosDados.getPreco());
+            produto.setCor(novosDados.getCor());
+            produto.setArmazenamento(novosDados.getArmazenamento());
+            produto.setMemoriaRAM(novosDados.getMemoriaRAM());
+            produto.setTamanhoTela(novosDados.getTamanhoTela());
+            produto.setTem5G(novosDados.isTem5G());
+            produto.setResistenciaAgua(novosDados.isResistenciaAgua());
+            produto.setEstoqueAtual(novosDados.getEstoqueAtual());
+            produto.setEstoqueMinimo(novosDados.getEstoqueMinimo());
+            salvarProdutos();
+            System.out.println("Produto atualizado com sucesso.");
+        } else {
+            System.out.println("Produto não encontrado.");
+        }
+    }
 
     public void salvarProdutos() {
         try {

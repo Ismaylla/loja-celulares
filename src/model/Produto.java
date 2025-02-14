@@ -18,7 +18,6 @@ public class Produto implements Serializable {
 	private int estoqueMinimo;
 
 
-
 	public Produto(String codigo, String nome, String modelo, String marca, double preco, String cor, String armazenamento, String memoriaRAM, double tamanhoTela, boolean tem5G, boolean resistenciaAgua,  int estoqueAtual, int estoqueMinimo) {
 		this.codigo = codigo;
 		this.nome = nome;
@@ -35,9 +34,8 @@ public class Produto implements Serializable {
 		this.estoqueMinimo = estoqueMinimo;
 	}
 
-	public String getCodigo() { return codigo;}
 
-	public void setCodigo(String codigo) { this.codigo = codigo;}
+	public String getCodigo() { return codigo;} //Só possui o Get pois não será atualizado
 
 	public String getNome() {
 		return nome;
@@ -107,13 +105,6 @@ public class Produto implements Serializable {
 		this.estoqueMinimo = estoqueMinimo;
 	}
 
-	public String getmodelo(){
-		return modelo;
-	}
-
-	public void setmodelo(String modelo){
-		this.modelo = modelo;
-	}
 
 	public Produto CriarProdutoPartiDaLinha(String CriarProduto) {
 		String[] linhas = CriarProduto.split(";");

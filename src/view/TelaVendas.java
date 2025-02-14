@@ -1,6 +1,7 @@
 package view;
 
 import controller.ProdutoController;
+import controller.ClienteController;
 import model.Produto;
 import javax.swing.*;
 import java.awt.*;
@@ -53,7 +54,6 @@ public class TelaVendas extends JFrame {
         JPanel barraTarefas = new JPanel();
         barraTarefas.setBackground(new Color(196, 212, 228));
         barraTarefas.setLayout(new FlowLayout(FlowLayout.LEFT));
-
         JButton btnGerenciarClientes = new JButton("Gerenciar Clientes");
         JButton btnGerenciarEstoque = new JButton("Gerenciar Estoque");
         JButton btnRelatorios = new JButton("Relatórios");
@@ -184,6 +184,14 @@ public class TelaVendas extends JFrame {
             TelaGerenciarEstoque telaGerenciarEstoque = new TelaGerenciarEstoque(produtoController, TelaVendas.this);
             telaGerenciarEstoque.setVisible(true);
             this.setVisible(false); // Apenas oculta a TelaVendas
+        });
+
+        // Função para o botão "Gerenciar Clientes"
+        btnGerenciarClientesRodape.addActionListener(e -> {
+            ClienteController clienteController = new ClienteController();
+            TelaGerenciarCliente telaGerenciarCliente = new TelaGerenciarCliente(clienteController, TelaVendas.this);
+            telaGerenciarCliente.setVisible(true);
+            TelaVendas.this.setVisible(false);
         });
 
         return rodape;

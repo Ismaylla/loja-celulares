@@ -70,14 +70,22 @@ public class Cliente implements Serializable {
         setDinheiroTotalGasto(valorTotal);
     }
 
-    public Cliente CriarClientePartirdaLinha(String CriarCliente){
-        String[] linhas = ArquivoUtil.splitCSV(CriarCliente);
-        String nome = ArquivoUtil.unquote(linhas[0]);
-        String cpf = ArquivoUtil.unquote(linhas[1]);
-        String telefone = ArquivoUtil.unquote(linhas[2]);
-        String email = ArquivoUtil.unquote(linhas[3]);
-        Double dinheiroTotalGasto = Double.parseDouble(linhas[4]);
-        int quantidadeVezesComprou = Integer.parseInt(linhas[5]);
+    public static Cliente CriarClientePartirdaLinha(String linhaCliente) {
+
+        String[] campos = ArquivoUtil.splitCSV(linhaCliente);
+
+        if (campos.length < 6) {
+            System.out.println("Erro: Dados insuficientes na linha: " + linhaCliente);
+            return null;
+        }
+
+        String nome = ArquivoUtil.unquote(campos[0]);
+        String cpf = ArquivoUtil.unquote(campos[1]);
+        String telefone = ArquivoUtil.unquote(campos[2]);
+        String email = ArquivoUtil.unquote(campos[3]);
+        Double dinheiroTotalGasto = Double.parseDouble(campos[4]);
+        int quantidadeVezesComprou = Integer.parseInt(campos[5]);
+
         return new Cliente(nome, cpf, telefone, email, dinheiroTotalGasto, quantidadeVezesComprou);
     }
 
@@ -90,4 +98,5 @@ public class Cliente implements Serializable {
                 String.valueOf(dinheiroTotalGasto) + ";" +
                 String.valueOf(quantidadeVezesComprou);
     }
+
 }

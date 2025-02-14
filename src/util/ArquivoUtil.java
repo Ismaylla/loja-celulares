@@ -1,21 +1,34 @@
 package util;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 public class ArquivoUtil {
 
-    public static <T> void salvarLista(String caminho, List<T> lista) throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(caminho))) {
-            oos.writeObject(lista);
-            System.out.println("Lista salva com sucesso no arquivo: " + caminho);
+
+    public static List<String> carregarLista(String filePath) {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return lines;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> List<T> carregarLista(String caminho) throws IOException, ClassNotFoundException {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(caminho))) {
-            return (List<T>) ois.readObject();
+    public static void salvarLista(String filePath, List<String> lines) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            for (String line : lines) {
+                bw.write(line);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -31,10 +44,22 @@ public class ArquivoUtil {
         }
         return text.replace("\"\"", "\"");
     }
-
     public static String[] splitCSV(String line) {
         if (line == null || line.trim().isEmpty()) {
             return new String[0];
         }
-        return line.split(",(?=(?:[^\"]\"[^\"]\")[^\"]$)"); }
+
+        // Divida a linha diretamente pelo ";"
+        String[] tokens = line.split(";");
+
+        // Remova as aspas dos tokens
+        for (int i = 0; i < tokens.length; i++) {
+            tokens[i] = tokens[i].replace("\"", "").trim();
+        }
+
+        return tokens;
+    }
+
 }
+
+

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ClienteController {
 
-    private final String ARQUIVO_CLIENTES = System.getProperty("user.dir") + "/src/arquivos/cliente";
+    private final String ARQUIVO_CLIENTES = System.getProperty("user.dir") + "/src/arquivos/Cliente";
     private List<Cliente> clientes;
 
     public ClienteController() {
@@ -100,20 +100,26 @@ public class ClienteController {
     }
 
     private void salvarClientes() {
-        try {
-            ArquivoUtil.salvarLista(ARQUIVO_CLIENTES, clientes);
-        } catch (IOException e) {
-            System.out.println("Erro ao salvar clientes: " + e.getMessage());
+        List<String> linhas = new ArrayList<>();
+        for (Cliente cliente : clientes) {
+            linhas.add(cliente.toString());
         }
+        ArquivoUtil.salvarLista(ARQUIVO_CLIENTES, linhas);
     }
 
     public List<Cliente> carregarClientes() {
+        List<Cliente> clientes = new ArrayList<>();
         try {
-            return ArquivoUtil.carregarLista(ARQUIVO_CLIENTES);
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Nenhum cliente encontrado ou erro ao carregar: " + e.getMessage());
-            return new ArrayList<>();
+            List<String> linhas = ArquivoUtil.carregarLista(ARQUIVO_CLIENTES);
+            for (String linha : linhas) {
+                Cliente cliente = Cliente.CriarClientePartirdaLinha(linha);
+                clientes.add(cliente);
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao carregar clientes: " + e.getMessage());
         }
+        return clientes;
     }
+
 
 }

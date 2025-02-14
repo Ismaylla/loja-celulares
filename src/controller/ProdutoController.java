@@ -94,19 +94,24 @@ public class ProdutoController {
     }
 
     public void salvarProdutos() {
-        try {
-            ArquivoUtil.salvarLista(ARQUIVO_PRODUTOS, produtos);
-        } catch (IOException e) {
-            System.out.println("Erro ao salvar produtos: " + e.getMessage());
+        List<String> linhas = new ArrayList<>();
+        for (Produto produto : produtos) {
+            linhas.add(produto.toString());
         }
+        ArquivoUtil.salvarLista(ARQUIVO_PRODUTOS, linhas);
     }
 
     public List<Produto> carregarProdutos() {
+        List<Produto> produtos = new ArrayList<>();
         try {
-            return ArquivoUtil.carregarLista(ARQUIVO_PRODUTOS);
-        } catch (IOException | ClassNotFoundException e) {
+            List<String> linhas = ArquivoUtil.carregarLista(ARQUIVO_PRODUTOS);
+            for (String linha : linhas) {
+                Produto produto = Produto.CriarProdutoPartiDaLinha(linha);
+                produtos.add(produto);
+            }
+        } catch (Exception e) {
             System.out.println("Nenhum produto encontrado ou erro ao carregar: " + e.getMessage());
-            return new ArrayList<>();
         }
+        return produtos;
     }
 }

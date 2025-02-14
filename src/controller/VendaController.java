@@ -60,20 +60,26 @@ public class VendaController{
         return total;
     }
 
-    private void salvarVendas() {
-        try {
-            ArquivoUtil.salvarLista(ARQUIVO_VENDAS, vendas);
-        } catch (IOException e) {
-            System.out.println("Erro ao salvar vendas: " + e.getMessage());
+    public void salvarVendas() {
+        List<String> linhas = new ArrayList<>();
+        for (Venda venda : vendas) {
+            linhas.add(venda.toString());
         }
+        ArquivoUtil.salvarLista(ARQUIVO_VENDAS, linhas);
     }
 
-    private List<Venda> carregarVendas() {
+    public List<Venda> carregarVendas() {
+        List<Venda> vendas = new ArrayList<>();
         try {
-            return ArquivoUtil.carregarLista(ARQUIVO_VENDAS);
-        } catch (IOException | ClassNotFoundException e) {
+            List<String> linhas = ArquivoUtil.carregarLista(ARQUIVO_VENDAS);
+            for (String linha : linhas) {
+                Venda venda = Venda.criarVendaPartiDaLinha(linha);
+                vendas.add(venda);
+            }
+        } catch (Exception e) {
             System.out.println("Nenhuma venda encontrada ou erro ao carregar: " + e.getMessage());
-            return new ArrayList<>();
         }
+        return vendas;
     }
+
 }

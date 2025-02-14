@@ -107,39 +107,49 @@ public class Produto implements Serializable {
 	}
 
 
-	public static Produto CriarProdutoPartiDaLinha(String CriarProduto) {
-		String[] linhas = ArquivoUtil.splitCSV(CriarProduto);
-		String codigo = ArquivoUtil.unquote(linhas[0]);
-		String nome = ArquivoUtil.unquote(linhas[1]);
-		String modelo = ArquivoUtil.unquote(linhas[2]);
-		String marca = ArquivoUtil.unquote(linhas[3]);
-		double preco = Double.parseDouble(linhas[4]);
-		String cor = ArquivoUtil.unquote(linhas[5]);
-		String armazenamento = ArquivoUtil.unquote(linhas[6]);
-		String memoriaRAM = ArquivoUtil.unquote(linhas[7]);
-		double tamanhoTela = Double.parseDouble(linhas[8]);
-		boolean tem5G = Boolean.parseBoolean(linhas[9]);
-		boolean resistenciaAgua = Boolean.parseBoolean(linhas[10]);
-		int estoqueAtual = Integer.parseInt(linhas[11]);
-		int estoqueMinimo = Integer.parseInt(linhas[12]);
+	public static Produto CriarProdutoPartiDaLinha(String linha) {
+		String[] campos = ArquivoUtil.splitCSV(linha);
+
+		if (campos.length < 13) {
+			System.out.println("Erro: Dados insuficientes na linha: " + linha);
+			return null;
+		}
+
+		String codigo = ArquivoUtil.unquote(campos[0]);
+		String nome = ArquivoUtil.unquote(campos[1]);
+		String modelo = ArquivoUtil.unquote(campos[2]);
+		String marca = ArquivoUtil.unquote(campos[3]);
+		double preco = Double.parseDouble(campos[4]);
+		String cor = ArquivoUtil.unquote(campos[5]);
+		String armazenamento = ArquivoUtil.unquote(campos[6]);
+		String memoriaRAM = ArquivoUtil.unquote(campos[7]);
+		double tamanhoTela = Double.parseDouble(campos[8]);
+		boolean tem5G = Boolean.parseBoolean(campos[9]);
+		boolean resistenciaAgua = Boolean.parseBoolean(campos[10]);
+		int estoqueAtual = Integer.parseInt(campos[11]);
+		int estoqueMinimo = Integer.parseInt(campos[12]);
 
 		return new Produto(codigo, nome, modelo, marca, preco, cor, armazenamento, memoriaRAM, tamanhoTela, tem5G, resistenciaAgua, estoqueAtual, estoqueMinimo);
 	}
 
 	@Override
 	public String toString() {
-		return ArquivoUtil.quote(codigo) + ";" +
-				ArquivoUtil.quote(nome) + ";" +
-				ArquivoUtil.quote(modelo) + ";" +
-				ArquivoUtil.quote(marca) + ";" +
-				String.valueOf(preco) + ";" +
-				ArquivoUtil.quote(cor) + ";" +
-				ArquivoUtil.quote(armazenamento) + ";" +
-				ArquivoUtil.quote(memoriaRAM) + ";" +
-				String.valueOf(tamanhoTela) + ";" +
-				String.valueOf(tem5G) + ";" +
-				String.valueOf(resistenciaAgua) + ";" +
-				String.valueOf(estoqueAtual) + ";" +
-				String.valueOf(estoqueMinimo);
+		return String.join(";",
+				ArquivoUtil.quote(codigo),
+				ArquivoUtil.quote(nome),
+				ArquivoUtil.quote(modelo),
+				ArquivoUtil.quote(marca),
+				String.valueOf(preco),
+				ArquivoUtil.quote(cor),
+				ArquivoUtil.quote(armazenamento),
+				ArquivoUtil.quote(memoriaRAM),
+				String.valueOf(tamanhoTela),
+				String.valueOf(tem5G),
+				String.valueOf(resistenciaAgua),
+				String.valueOf(estoqueAtual),
+				String.valueOf(estoqueMinimo)
+		);
 	}
+
+
 }

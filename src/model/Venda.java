@@ -54,30 +54,36 @@ public class Venda implements Serializable {
 
 
     public static Venda criarVendaPartiDaLinha(String linhaVenda) {
-        String[] linhas = ArquivoUtil.splitCSV(linhaVenda);
 
-        String nomeCliente = ArquivoUtil.unquote(linhas[0]);
-        String cpfCliente = ArquivoUtil.unquote(linhas[1]);
-        String telefoneCliente = ArquivoUtil.unquote(linhas[2]);
-        String emailCliente = ArquivoUtil.unquote(linhas[3]);
-        double dinheiroTotalGasto = Double.parseDouble(linhas[4]);
-        int quantidadeVezesComprou = Integer.parseInt(linhas[5]);
+        String[] campos = ArquivoUtil.splitCSV(linhaVenda);
+
+        if (campos.length < 19) {
+            System.out.println("Erro: Dados insuficientes na linha: " + linhaVenda);
+            return null;
+        }
+
+        String nomeCliente = ArquivoUtil.unquote(campos[0]);
+        String cpfCliente = ArquivoUtil.unquote(campos[1]);
+        String telefoneCliente = ArquivoUtil.unquote(campos[2]);
+        String emailCliente = ArquivoUtil.unquote(campos[3]);
+        double dinheiroTotalGasto = Double.parseDouble(campos[4]);
+        int quantidadeVezesComprou = Integer.parseInt(campos[5]);
 
         Cliente cliente = new Cliente(nomeCliente, cpfCliente, telefoneCliente, emailCliente, dinheiroTotalGasto, quantidadeVezesComprou);
 
-        String codigoProduto = ArquivoUtil.unquote(linhas[6]);
-        String nomeProduto = ArquivoUtil.unquote(linhas[7]);
-        String modeloProduto = ArquivoUtil.unquote(linhas[8]);
-        String marcaProduto = ArquivoUtil.unquote(linhas[9]);
-        double precoProduto = Double.parseDouble(linhas[10]);
-        String corProduto = ArquivoUtil.unquote(linhas[11]);
-        String armazenamentoProduto = ArquivoUtil.unquote(linhas[12]);
-        String memoriaRAMProduto = ArquivoUtil.unquote(linhas[13]);
-        double tamanhoTelaProduto = Double.parseDouble(linhas[14]);
-        boolean tem5GProduto = Boolean.parseBoolean(linhas[15]);
-        boolean resistenciaAguaProduto = Boolean.parseBoolean(linhas[16]);
-        int estoqueAtualProduto = Integer.parseInt(linhas[17]);
-        int estoqueMinimoProduto = Integer.parseInt(linhas[18]);
+        String codigoProduto = ArquivoUtil.unquote(campos[6]);
+        String nomeProduto = ArquivoUtil.unquote(campos[7]);
+        String modeloProduto = ArquivoUtil.unquote(campos[8]);
+        String marcaProduto = ArquivoUtil.unquote(campos[9]);
+        double precoProduto = Double.parseDouble(campos[10]);
+        String corProduto = ArquivoUtil.unquote(campos[11]);
+        String armazenamentoProduto = ArquivoUtil.unquote(campos[12]);
+        String memoriaRAMProduto = ArquivoUtil.unquote(campos[13]);
+        double tamanhoTelaProduto = Double.parseDouble(campos[14]);
+        boolean tem5GProduto = Boolean.parseBoolean(campos[15]);
+        boolean resistenciaAguaProduto = Boolean.parseBoolean(campos[16]);
+        int estoqueAtualProduto = Integer.parseInt(campos[17]);
+        int estoqueMinimoProduto = Integer.parseInt(campos[18]);
 
         Produto produto = new Produto(codigoProduto, nomeProduto, modeloProduto, marcaProduto, precoProduto, corProduto, armazenamentoProduto, memoriaRAMProduto, tamanhoTelaProduto, tem5GProduto, resistenciaAguaProduto, estoqueAtualProduto, estoqueMinimoProduto);
 
@@ -103,4 +109,5 @@ public class Venda implements Serializable {
                 produtosCSV.toString() +
                 String.valueOf(valorTotal);
     }
+
 }

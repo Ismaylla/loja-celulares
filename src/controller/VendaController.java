@@ -30,7 +30,7 @@ public class VendaController {
         vendas.add(venda);
         ClienteController clienteController = new ClienteController();
         cliente.setupClientePosCompra(valorTotal);
-        clienteController.atualizaClientePosCompra(cliente, valorTotal);
+        clienteController.atualizaClientePosCompra(cliente, valorTotal); //sei la
         salvarVendas();
         System.out.println("Venda registrada com sucesso.");
     }

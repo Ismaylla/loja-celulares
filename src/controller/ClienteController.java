@@ -2,27 +2,25 @@ package controller;
 
 import model.Cliente;
 import util.ArquivoUtil;
+import validator.ClienteValidator;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class ClienteController {
+
     private final String ARQUIVO_CLIENTES = System.getProperty("user.dir") + "/src/arquivos/cliente";
     private List<Cliente> clientes;
-
-    private static final Pattern CPF_PATTERN = Pattern.compile("\\d{11}");
-    private static final Pattern NOME_PATTERN = Pattern.compile("^[A-Za-zÀ-ÿ ]+$");
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w.%+-]+@[\\w.-]+\\.[A-Za-z]{2,6}$");
-    private static final Pattern TELEFONE_PATTERN = Pattern.compile("(\\d{2}\\d{5}-\\d{4})");
 
     public ClienteController() {
         this.clientes = carregarClientes();
     }
 
     public void adicionarCliente(Cliente cliente) {
-        if (!validarCliente(cliente)) return;
+        // Validação completa do cliente usando um único método
+        if (!validarDadosCliente(cliente)) return;
+
         clientes = carregarClientes();
 
         if (buscarClientePorCpf(cliente.getCpf()) != null) {
@@ -53,10 +51,7 @@ public class ClienteController {
     }
 
     public Cliente buscarClientePorCpf(String cpf) {
-        if (!validarCpf(cpf)) {
-            System.out.println("CPF inválido. Deve conter 11 dígitos numéricos.");
-            return null;
-        }
+        // Busca por CPF sem validação isolada
         clientes = carregarClientes();
         for (Cliente cliente : clientes) {
             if (cliente.getCpf().equals(cpf)) {
@@ -66,13 +61,7 @@ public class ClienteController {
         return null;
     }
 
-
     public void removerCliente(String cpf) {
-        if (!validarCpf(cpf)) {
-            System.out.println("CPF inválido. Deve conter 11 dígitos numéricos.");
-            return;
-        }
-        clientes = carregarClientes();
         Cliente cliente = buscarClientePorCpf(cpf);
         if (cliente != null) {
             clientes.remove(cliente);
@@ -84,11 +73,8 @@ public class ClienteController {
     }
 
     public void atualizarCliente(String cpf, Cliente novosDados) {
-        if (!validarCpf(cpf)) {
-            System.out.println("CPF inválido. Deve conter 11 dígitos numéricos.");
-            return;
-        }
-        if (!validarCliente(novosDados)) return;
+        // Validação dos novos dados do cliente com método único
+        if (!validarDadosCliente(novosDados)) return;
 
         clientes = carregarClientes();
         Cliente cliente = buscarClientePorCpf(cpf);
@@ -104,6 +90,14 @@ public class ClienteController {
         }
     }
 
+    private boolean validarDadosCliente(Cliente cliente) {
+        // Valida todos os dados do cliente utilizando o ClienteValidator
+        if (!ClienteValidator.validarCliente(cliente)) {
+            System.out.println("Erro: Dados inválidos para o cliente.");
+            return false;
+        }
+        return true;
+    }
 
     private void salvarClientes() {
         try {
@@ -122,35 +116,4 @@ public class ClienteController {
         }
     }
 
-    public boolean validarCpf(String cpf) {
-        return cpf != null && CPF_PATTERN.matcher(cpf).matches();
-    }
-
-    public boolean validarNome(String nome) {
-        return nome != null && NOME_PATTERN.matcher(nome).matches();
-    }
-
-    public boolean validarEmail(String email) {
-        return email != null && EMAIL_PATTERN.matcher(email).matches();
-    }
-
-    public boolean validarTelefone(String telefone) {
-        return telefone != null && TELEFONE_PATTERN.matcher(telefone).matches();
-    }
-
-    public boolean validarCliente(Cliente cliente) {
-        if (!validarNome(cliente.getNome())) {
-            System.out.println("Nome inválido. Deve conter apenas letras.");
-            return false;
-        }
-        if (!validarCpf(cliente.getCpf())) {
-            System.out.println("CPF inválido. Deve conter 11 dígitos numéricos.");
-            return false;
-        }
-        if (!validarEmail(cliente.getEmail())) {
-            System.out.println("Email inválido.");
-            return false;
-        }
-        return true;
-    }
 }

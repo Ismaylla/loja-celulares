@@ -115,9 +115,6 @@ public class Produto implements Serializable {
 		this.modelo = modelo;
 	}
 
-
-
-
 	public Produto CriarProdutoPartiDaLinha(String CriarProduto) {
 		String[] linhas = CriarProduto.split(";");
 		String codigo = linhas[0];

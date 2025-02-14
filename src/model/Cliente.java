@@ -1,5 +1,4 @@
 package model;
-
 import java.io.Serializable;
 
 public class Cliente implements Serializable {
@@ -30,7 +29,7 @@ public class Cliente implements Serializable {
 
     public String getCpf() {
         return cpf;
-    } //Só precisa do get pois nunca atualizado
+    } //Só precisa do get pois o valor nunca será atualizado atualizado
 
     public String getTelefone() {
         return telefone;
